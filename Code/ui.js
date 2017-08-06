@@ -1,6 +1,9 @@
 
-var colB = 'rgb(62, 6, 52)'
-var colG = 'rgb(140, 19, 88)'
+// var colB = 'rgb(62, 6, 52)'
+// var colG = 'rgb(140, 19, 88)'
+
+var colB = 'rgb(65, 65, 65)'
+var colG = 'rgb(96, 96, 96)'
 
 
 function grid(){

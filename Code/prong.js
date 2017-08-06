@@ -1,10 +1,12 @@
-function Prong(x,y,width,height,circuitArray){
+function Prong(x,y,width,height,circuitArray,id){
   this.x=x
   this.y=y
   this.width=width
   this.height=height
   this.text="BOI WE CAN STORE VALUES N' SHIT"
   this.selcted = false
+  this.id=id
+  this.wired=false
   circuitArray.push(this)
 }
 

@@ -20,17 +20,16 @@ canvas.addEventListener('mousemove', function(evt) {
 }, false)
 
 canvas.addEventListener('mouseup', function(evt) {
-  if(evt.button === right){
+  if(evt.button === left && testShift()){
+    stopClickforABit()
     //Move IC's
     for(var i=0;i<circuits.length;i++){
       if(pointWithinBox(circuits[i],mousePos)){
         if(circuits[i].selected==false){
-          stopClickforABit()
           circuits[i].selected=true;
           return
         }
         if(circuits[i].selected==true){
-          stopClickforABit()
           circuits[i].selected=false;
         }
       }
@@ -39,30 +38,49 @@ canvas.addEventListener('mouseup', function(evt) {
   }
 
   if(evt.button === left){
+    stopClickforABit()
     //Make Wire
     for(var i=0;i<circuits.length;i++){
-      if(pointWithinBox(circuits[i],mousePos)){
-        var ic=circuits[i]
-        //Clear All Prongs
-        // for(var j=0;j<ic.inpA.length;j++){
-        //   ic.inpA[j].selected=false
-        // }
-        // for(var j=0;j<ic.oupA.length;j++){
-        //   ic.inpA[j].selected=false
-        // }
-        //
-        // ic.pNum++
-        //
-        // if(ic.pNum>ic.inpA.length){
-        //   if(ic.pNum-ic.inpA.length>ic.oupA.length){
-        //     ic.pNum=0
-        //   }else ic.oupA[ic.pNum-1].selected=true
-        // }else ic.inpA[ic.pNum-1].selected=true
-        //
+      var ic=circuits[i]
+      for(var j=0;j<ic.inpA.length;j++){
+        if(pointWithinBox(ic.inpA[j],mousePos)){
 
+          for(var a=0;a<circuits.length;a++){
+            for(var b=0;b<circuits[a].oupA.length;b++){
+              //if an output is selected and the selected input is not wired
+              if(circuits[a].oupA[b].selected==true && ic.inpA[j].wired==false){
+                //There is an output selected
+                //If the input is on the same chip as output, skip
+                if(ic.id==circuits[a].id){
+                  console.log('cant put the output of one chip to the input of the same chip')
+                  return
+                }
+                circuits[a].oupA[b].selected=false
+                circuits[a].oupA[b].wired=true
+                ic.inpA[j].wired=true
+                var wire=new Wire(circuits[a].oupA[b].x+circuits[a].oupA[b].width,circuits[a].oupA[b].y+circuits[a].oupA[b].height/2,ic.inpA[j].x,ic.inpA[j].y+ic.inpA[j].height/2,circuits[a].oupA[b],ic.inpA[j])
+              }
+            }
+          }
+
+        }
+      }
+      for(var j=0;j<ic.oupA.length;j++){
+        var anyOupsSelectedforOup=false
+        if(pointWithinBox(ic.oupA[j],mousePos)){
+
+          for(var a=0;a<circuits.length;a++){
+            for(var b=0;b<circuits[a].oupA.length;b++){
+              if(circuits[a].oupA[b].selected==true) anyOupsSelectedforOup=true
+            }
+          }
+          if(anyOupsSelectedforOup==false && ic.oupA[j].wired==false) ic.oupA[j].selected=true
+
+        }
       }
     }
   }
+
 }, false)
 
 function stopClickforABit(){
